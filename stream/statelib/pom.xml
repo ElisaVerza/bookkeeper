@@ -27,6 +27,7 @@
   <groupId>org.apache.bookkeeper</groupId>
   <artifactId>statelib</artifactId>
   <name>Apache BookKeeper :: Stream Storage :: State Library</name>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.distributedlog</groupId>
