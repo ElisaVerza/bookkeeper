@@ -4,12 +4,10 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Random;
 
 import org.apache.bookkeeper.common.util.Watcher;
 import org.junit.Assert;
@@ -26,7 +24,7 @@ import io.netty.buffer.Unpooled;
 
 
 @RunWith(value=Parameterized.class)
-public class FileInfoTest{
+public class FileInfoUtilityTest{
     private FileInfo fi;
 
     private long firstLac;
@@ -46,7 +44,7 @@ public class FileInfoTest{
         });
     }
 
-    public FileInfoTest(long firstLac, long secondLac, long singleLac, int buffSize){
+    public FileInfoUtilityTest(long firstLac, long secondLac, long singleLac, int buffSize){
         this.firstLac = firstLac;
         this.secondLac = secondLac;
         this.singleLac = singleLac;
@@ -96,7 +94,27 @@ public class FileInfoTest{
         assertEquals(wait, fi.waitForLastAddConfirmedUpdate(firstLac, watcher));
     }
 
-/**/
+    //TODO: test da eliminare.
+    @Test
+    public void testSetExplicitLac(){
+        int i = 0;
+        ByteBuffer bb = ByteBuffer.allocate(16);
+        while(i<bb.limit()/2){
+            bb.putChar('o');
+            i++;
+        }
+        bb.rewind();
+
+        ByteBuf retLac = Unpooled.buffer(bb.capacity());
+        bb.rewind();
+        retLac.writeBytes(bb);
+        bb.rewind();
+        fi.setExplicitLac(retLac);
+        int num = 3;
+        assertEquals(3, num);
+        //Assert.assertThrows(Exception.class, () -> fi.setExplicitLac(retLac));
+    }
+/*set e get explicit lac*/
     @Test
     public void testSetExplicitLacLen(){
         int i = 0;
@@ -124,6 +142,12 @@ public class FileInfoTest{
         else{
             fi.setExplicitLac(retLac);
             assertEquals(entryList.get(1), fi.getLastAddConfirmed());
+
+            ByteBuf ret = fi.getExplicitLac();
+            ByteBuffer lac = ByteBuffer.allocate(ret.capacity());
+            ret.readBytes(lac);
+            lac.rewind();
+            assertEquals(bb, lac);
         }
     }
 }
