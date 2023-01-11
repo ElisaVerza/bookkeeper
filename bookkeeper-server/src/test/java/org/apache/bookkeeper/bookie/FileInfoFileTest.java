@@ -28,6 +28,7 @@ public class FileInfoFileTest{
     private Integer signature;
     private Integer version;
     private Integer lacBufferLen;
+    private Integer overflow;
     private static byte[] headerMK = "SecondMK".getBytes();
     private Integer headerMKLen;
     public int remaining;
@@ -36,24 +37,25 @@ public class FileInfoFileTest{
     @Parameters
     public static Collection<Object[]> getTestParameters(){
         return Arrays.asList(new Object[][]{
-            {true, ByteBuffer.wrap("BKLE".getBytes(UTF_8)).getInt(), 1, headerMK.length , 16}, //Test in cui viene creato un file con header valido
-            {true, ByteBuffer.wrap("NotASignature".getBytes(UTF_8)).getInt(), 1, headerMK.length,16}, //Test signature sbagliata
-            {true, ByteBuffer.wrap("BKLE".getBytes(UTF_8)).getInt(), 2, headerMK.length,16}, //Test version header maggiore di 1
-            {true, ByteBuffer.wrap("BKLE".getBytes(UTF_8)).getInt(), 1, -1, 16}, //Test MK len negativa
-            {true, ByteBuffer.wrap("BKLE".getBytes(UTF_8)).getInt(), 1, headerMK.length+Variables.OVERFLOW_INDEX,16}, //Test Mk len maggiore del buffer
-            {true, ByteBuffer.wrap("BKLE".getBytes(UTF_8)).getInt(), 1, headerMK.length, 8}, //Test lac len 10
-            //{true, ByteBuffer.wrap("BKLE".getBytes(UTF_8)).getInt(), 1, headerMK.length, Variables.OVERFLOW_INDEX}, //Test len lac maggiore del buffer
-            {false, null, null, null, null}, //Test in cui non viene creato un file
-            {true, null, null, null, null}, //Test in cui non viene creato un file
+            {true, ByteBuffer.wrap("BKLE".getBytes(UTF_8)).getInt(), 1, headerMK.length , 16, 0}, //Test in cui viene creato un file con header valido
+            {true, ByteBuffer.wrap("NotASignature".getBytes(UTF_8)).getInt(), 1, headerMK.length,16, 0}, //Test signature sbagliata
+            {true, ByteBuffer.wrap("BKLE".getBytes(UTF_8)).getInt(), 2, headerMK.length,16, 0}, //Test version header maggiore di 1
+            {true, ByteBuffer.wrap("BKLE".getBytes(UTF_8)).getInt(), 1, -1, 16, 0}, //Test MK len negativa
+            {true, ByteBuffer.wrap("BKLE".getBytes(UTF_8)).getInt(), 1, headerMK.length+Variables.OVERFLOW_INDEX,16, 0}, //Test Mk len maggiore del buffer
+            {true, ByteBuffer.wrap("BKLE".getBytes(UTF_8)).getInt(), 1, headerMK.length, 8, 0}, //Test lac len 10
+            {true, ByteBuffer.wrap("BKLE".getBytes(UTF_8)).getInt(), 1, headerMK.length, 16, Variables.OVERFLOW_INDEX}, //Test len lac maggiore del buffer
+            {false, null, null, null, null, 0}, //Test in cui non viene creato un file
+            {true, null, null, null, null, 0}, //Test in cui non viene creato un file
         });
     }
 
-    public FileInfoFileTest(boolean fileExists, Integer signature, Integer version, Integer headerMKLen, Integer lacBufferLen){
+    public FileInfoFileTest(boolean fileExists, Integer signature, Integer version, Integer headerMKLen, Integer lacBufferLen, Integer overflow){
         this.fileExists = fileExists;
         this.signature = signature;
         this.version = version;
         this.lacBufferLen = lacBufferLen;
         this.headerMKLen = headerMKLen;
+        this.overflow = overflow;
         
     }
 /*Nel setup viene creato l'oggetto FileInfo */
@@ -86,7 +88,7 @@ public class FileInfoFileTest{
             remaining = headerBB.remaining();
             headerBB.put(headerMK);
             headerBB.putInt(1);
-            headerBB.putInt(lacBufferLen);
+            headerBB.putInt(lacBufferLen+overflow);
             headerBB.put(lacBB);
             headerBB.rewind();
             myWriter.position(0);
@@ -98,7 +100,7 @@ public class FileInfoFileTest{
     public void readHeaderTest() throws IOException {
         if(!fileExists||(signature==null & version==null & headerMKLen == null & lacBufferLen == null)||
             signature!=ByteBuffer.wrap("BKLE".getBytes(UTF_8)).getInt()||version<0||version>1||headerMKLen<0||
-            headerMKLen>remaining||(lacBufferLen<16 & lacBufferLen!=0)){
+            headerMKLen>remaining||(lacBufferLen+overflow<16 & lacBufferLen+overflow!=0)||lacBufferLen+overflow>lacBufferLen){
             Assert.assertThrows(Exception.class, () -> fi.readHeader());
         }
         else{
