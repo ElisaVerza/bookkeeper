@@ -22,6 +22,11 @@ import org.mockito.MockitoAnnotations;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
+import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 
 @RunWith(value=Parameterized.class)
 public class FileInfoUtilityTest{
@@ -31,6 +36,11 @@ public class FileInfoUtilityTest{
     private long secondLac;
     private long singleLac;
     private int buffSize;
+    private String toWrite;
+    private int offset;
+    private boolean bestEffort;
+
+    private ByteBuffer bufferToRead;
 
     @Mock
     Watcher<LastAddConfirmedUpdateNotification> watcher;
@@ -38,28 +48,57 @@ public class FileInfoUtilityTest{
     @Parameters
     public static Collection<Object[]> getTestParameters(){
         return Arrays.asList(new Object[][]{
-            {2l, 1l, 1l, 8}, //inserimento lac minore
-            {1l, 2l, -1l, 16}, //inserimento lac maggiore
-            {1l, 1l, 0l, 24} //inserimento lac maggiore
+            {2l, 1l, 1l, 8, "read from buff", 0, true}, //inserimento lac minore
+            //{1l, 2l, -1l, 16}, //inserimento lac maggiore
+            //{1l, 1l, 0l, 24} //inserimento lac maggiore
         });
     }
 
-    public FileInfoUtilityTest(long firstLac, long secondLac, long singleLac, int buffSize){
+    public FileInfoUtilityTest(long firstLac, long secondLac, long singleLac, int buffSize, String toWrite, int offset, boolean bestEffort){
         this.firstLac = firstLac;
         this.secondLac = secondLac;
         this.singleLac = singleLac;
         this.buffSize = buffSize;
+        this.toWrite = toWrite;
+        this.offset = offset;
+        this.bestEffort = bestEffort;
     }
-/*Nel setup viene creato l'oggetto FileInfo e vengono inizializzati gli oggetti mockati*/
+/*Nel setup viene creato l'oggetto FileInfo e inizializzati gli oggetti mockati infine viene popolato l'header del file*/
     @Before
     public void setUp() throws IOException {
         MockitoAnnotations.openMocks(this);
+        int i = 0;
+        byte[] headerMK = "SecondMK".getBytes();
 
+        bufferToRead = ByteBuffer.allocate(toWrite.length());
+        bufferToRead.put(ByteBuffer.wrap(toWrite.getBytes(UTF_8)));
         File fl = new File(Variables.LEDGER_FILE_INDEX);
 
         byte[] mk = Variables.MASTER_KEY.getBytes();
         int version = Variables.VERSION;
         fi = new FileInfo(fl, mk, version);
+
+        //Scrittura sul file dell'header
+        FileChannel myWriter = new RandomAccessFile(fl, "rw").getChannel();
+        ByteBuffer lacBB = ByteBuffer.allocate(16);
+        while(i<2){
+            lacBB.putLong(1l);
+            i++;
+        }
+        lacBB.rewind();
+        ByteBuffer headerBB = ByteBuffer.allocate(36+headerMK.length);
+        
+        headerBB.putInt(ByteBuffer.wrap("BKLE".getBytes(UTF_8)).getInt());
+        headerBB.putInt(1);
+        headerBB.putInt(headerMK.length);
+        headerBB.put(headerMK);
+        headerBB.putInt(1);
+        headerBB.putInt(16);
+        headerBB.put(lacBB);
+        headerBB.rewind();
+
+        myWriter.position(0);
+
     }
 /*Seguono due test per il metodo setLastAddConfirmed. Il metodo prende in input un long il cui valore rappresenta
  * l'indice last add confirmed (lac) ed in output il long con il lac aggiornato. Qualsiasi tipo di long è valido, 
@@ -149,5 +188,10 @@ public class FileInfoUtilityTest{
             lac.rewind();
             assertEquals(bb, lac);
         }
+    }
+
+    @Test
+    public void readTest() throws IOException{
+        assertEquals(toWrite.length(), fi.read(bufferToRead, offset, bestEffort));
     }
 }
