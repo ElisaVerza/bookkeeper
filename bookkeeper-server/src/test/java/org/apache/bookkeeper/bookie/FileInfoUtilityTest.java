@@ -36,9 +36,11 @@ public class FileInfoUtilityTest{
     private long secondLac;
     private long singleLac;
     private int buffSize;
-    private String toWrite;
-    private int offset;
+    private long offset;
+    private String byteToWrite;
+    static String str = "Write something";
     private boolean bestEffort;
+    private int size;
 
     private ByteBuffer bufferToRead;
 
@@ -48,20 +50,23 @@ public class FileInfoUtilityTest{
     @Parameters
     public static Collection<Object[]> getTestParameters(){
         return Arrays.asList(new Object[][]{
-            {2l, 1l, 1l, 8, "read from buff", 0, true}, //inserimento lac minore
-            //{1l, 2l, -1l, 16}, //inserimento lac maggiore
-            //{1l, 1l, 0l, 24} //inserimento lac maggiore
+            {2l, 1l, 1l, 8, 0, true, str, str.length()}, //inserimento lac minore, besteffort true e size del buffer giusta
+            {1l, 2l, -1l, 16, 0, false, str, str.length()+100}, //inserimento lac maggiore, besteffort false e size del buffaer maggiore
+            {1l, 1l, 0l, 24, str.length()+100, true, str, str.length()}, //inserimento lac maggiore, indice maggiore lunghezza buffer
+            {1l, 1l, 0l, 24, -2000, true, str, str.length()}, //inserimento lac maggiore, indice negativo
+            {1l, 1l, 0l, 24, 0, true, "", 1}, //inserimento lac maggiore, file channel senza dati scritti*/
         });
     }
 
-    public FileInfoUtilityTest(long firstLac, long secondLac, long singleLac, int buffSize, String toWrite, int offset, boolean bestEffort){
+    public FileInfoUtilityTest(long firstLac, long secondLac, long singleLac, int buffSize, long offset, boolean bestEffort, String byteToWrite, int size){
         this.firstLac = firstLac;
         this.secondLac = secondLac;
         this.singleLac = singleLac;
         this.buffSize = buffSize;
-        this.toWrite = toWrite;
         this.offset = offset;
         this.bestEffort = bestEffort;
+        this.byteToWrite = byteToWrite;
+        this.size = size;
     }
 /*Nel setup viene creato l'oggetto FileInfo e inizializzati gli oggetti mockati infine viene popolato l'header del file*/
     @Before
@@ -69,9 +74,8 @@ public class FileInfoUtilityTest{
         MockitoAnnotations.openMocks(this);
         int i = 0;
         byte[] headerMK = "SecondMK".getBytes();
+        bufferToRead = ByteBuffer.allocate(1024);
 
-        bufferToRead = ByteBuffer.allocate(toWrite.length());
-        bufferToRead.put(ByteBuffer.wrap(toWrite.getBytes(UTF_8)));
         File fl = new File(Variables.LEDGER_FILE_INDEX);
 
         byte[] mk = Variables.MASTER_KEY.getBytes();
@@ -133,26 +137,6 @@ public class FileInfoUtilityTest{
         assertEquals(wait, fi.waitForLastAddConfirmedUpdate(firstLac, watcher));
     }
 
-    //TODO: test da eliminare.
-    @Test
-    public void testSetExplicitLac(){
-        int i = 0;
-        ByteBuffer bb = ByteBuffer.allocate(16);
-        while(i<bb.limit()/2){
-            bb.putChar('o');
-            i++;
-        }
-        bb.rewind();
-
-        ByteBuf retLac = Unpooled.buffer(bb.capacity());
-        bb.rewind();
-        retLac.writeBytes(bb);
-        bb.rewind();
-        fi.setExplicitLac(retLac);
-        int num = 3;
-        assertEquals(3, num);
-        //Assert.assertThrows(Exception.class, () -> fi.setExplicitLac(retLac));
-    }
 /*set e get explicit lac*/
     @Test
     public void testSetExplicitLacLen(){
@@ -192,6 +176,44 @@ public class FileInfoUtilityTest{
 
     @Test
     public void readTest() throws IOException{
-        assertEquals(toWrite.length(), fi.read(bufferToRead, offset, bestEffort));
+        ByteBuffer toWrite = ByteBuffer.allocate(size); 
+        toWrite.put(ByteBuffer.wrap(byteToWrite.getBytes(UTF_8)));
+        toWrite.rewind();
+        ByteBuffer[] bbArray = new ByteBuffer[1];
+        bbArray[0] = toWrite;
+        fi.write(bbArray, 0);
+
+        if(offset>size || str.length()==0){
+            assertEquals(0, fi.read(bufferToRead, offset, bestEffort));     
+        }
+        else if(bestEffort & offset<size & offset>0){
+            assertEquals(toWrite.capacity(), fi.read(bufferToRead, offset, bestEffort));
+        }
+        else if((!bestEffort)|| offset<0){
+            Assert.assertThrows(Exception.class, () -> fi.read(bufferToRead, offset, bestEffort));
+        }
     }
 }
+
+
+
+    //TODO: test da eliminare.
+    /*@Test
+    public void testSetExplicitLac(){
+        int i = 0;
+        ByteBuffer bb = ByteBuffer.allocate(16);
+        while(i<bb.limit()/2){
+            bb.putChar('o');
+            i++;
+        }
+        bb.rewind();
+
+        ByteBuf retLac = Unpooled.buffer(bb.capacity());
+        bb.rewind();
+        retLac.writeBytes(bb);
+        bb.rewind();
+        fi.setExplicitLac(retLac);
+        int num = 3;
+        assertEquals(3, num);
+        //Assert.assertThrows(Exception.class, () -> fi.setExplicitLac(retLac));
+    }*/
