@@ -104,12 +104,6 @@ public class FileInfoFileTest{
     }
 
     @Test
-    public void dummyTest(){
-        int num = 0;
-        assertEquals(0, num);
-    }
-
-    @Test
     public void readHeaderTest() throws IOException {
         if(!fileExists){
             deleteFile(Variables.LEDGER_FILE_INDEX);
