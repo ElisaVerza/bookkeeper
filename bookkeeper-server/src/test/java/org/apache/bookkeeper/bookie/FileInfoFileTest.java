@@ -66,6 +66,7 @@ public class FileInfoFileTest{
         this.statebits = statebits;
 
     }
+
 /*Nel setup viene creato l'oggetto FileInfo. Viene passato l'oggetto File solo se il test lo prevede e viene costruito l'header
  * secondo i valori richiesti dal singolo test parametrizzato.
 */
@@ -100,6 +101,12 @@ public class FileInfoFileTest{
             myWriter.position(0);
             myWriter.write(headerBB);
         }
+    }
+
+    @Test
+    public void dummyTest(){
+        int num = 0;
+        assertEquals(0, num);
     }
 
     @Test
