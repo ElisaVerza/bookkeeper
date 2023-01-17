@@ -151,7 +151,7 @@ public class FileInfoTest{
  * tra i due inserimenti.
 */
     @Test
-    public void testMultiLac() {
+    public void integrationTest1() {
         fi.setLastAddConfirmed(firstLac);
         assertEquals(Math.max(firstLac, secondLac), fi.setLastAddConfirmed(secondLac));
     }
@@ -160,7 +160,7 @@ public class FileInfoTest{
  *long non è accettato un input null.
 */
     @Test
-    public void testSingleLac() {
+    public void integrationTest2() {
         assertEquals(singleLac, fi.setLastAddConfirmed(singleLac));
     }
 
@@ -170,7 +170,7 @@ public class FileInfoTest{
  * il metodo con un previousLac minore, maggiore o uguale a quello attuale.
  */
     @Test
-    public void testLacWait(){
+    public void integrationTest3(){
         boolean wait = true;
         if(secondLac > firstLac){wait = false;}
         fi.setLastAddConfirmed(secondLac);
@@ -179,7 +179,7 @@ public class FileInfoTest{
 
 /*set e get explicit lac*/
     @Test
-    public void testSetExplicitLacLen(){
+    public void tintegrationTest4(){
         int i = 0;
         long entry;
         long leftLimit = -100L;
@@ -215,7 +215,7 @@ public class FileInfoTest{
     }
 
     @Test
-    public void writeTest() throws IOException{
+    public void integrationTest5() throws IOException{
         if(position >= 0){
             assertEquals(writtenChar, fi.write(bbArray, position));
         }
@@ -225,7 +225,7 @@ public class FileInfoTest{
     }
 
     @Test
-    public void readTest() throws IOException{
+    public void integrationTest6() throws IOException{
 
         fi.write(bbArray, 0);
 
@@ -244,7 +244,7 @@ public class FileInfoTest{
     }
 
     @Test
-    public void closeTest() throws IOException{
+    public void integrationTest7() throws IOException{
         if(isClosed!=null && force!=null){
             spyFi.close(force);
             if(isClosed){
