@@ -210,7 +210,7 @@
 
     <!--Added by Ella-->
     <!--<sonar.host.url>https://sonarcloud.io</sonar.host.url>-->
-    <sonar.coverage.jacoco.xmlReportPaths>home/ella/Documenti/ISW2/bookkeeper/tests/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+    <sonar.coverage.jacoco.xmlReportPaths>${basedir}/tests/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 
   </properties>
 
