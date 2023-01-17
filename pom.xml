@@ -21,6 +21,7 @@
     <artifactId>apache</artifactId>
     <version>19</version>
   </parent>
+  
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.bookkeeper</groupId>
   <version>4.16.0-SNAPSHOT</version>
@@ -70,7 +71,8 @@
     <module>bookkeeper-dist</module>
     <module>shaded</module>
     <module>microbenchmarks</module>
-    <!--<module>tests</module> #ELLA -->
+    <!--Added by Ella-->
+    <module>tests</module>
   </modules>
   <mailingLists>
     <mailingList>
@@ -105,9 +107,6 @@
     </developer>
   </developers>
   <properties>
-    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-    <sonar.coverage.jacoco.xmlReportPaths>${maven.multiModuleProjectDirectory}/tests/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
-
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <javac.target>1.8</javac.target>
@@ -147,7 +146,7 @@
     <jmock.version>2.8.2</jmock.version>
     <jsoup.version>1.14.3</jsoup.version>
     <jna.version>3.2.7</jna.version>
-    <junit.version>4.12</junit.version>
+    <junit.version>4.13</junit.version>
     <!-- required by zookeeper test utilities imported from ZooKeeper -->
     <junit5.version>5.6.2</junit5.version>
     <libthrift.version>0.14.2</libthrift.version>
@@ -208,6 +207,11 @@
     <forkCount.variable>1</forkCount.variable>
     <servlet-api.version>4.0.0</servlet-api.version>
     <rxjava.version>3.0.1</rxjava.version>
+
+    <!--Added by Ella-->
+    <!--<sonar.host.url>https://sonarcloud.io</sonar.host.url>-->
+    <sonar.coverage.jacoco.xmlReportPaths>$/home/ella/Documenti/ISW2/bookkeeper/tests/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+
   </properties>
 
   <!-- dependency definitions -->
@@ -841,19 +845,6 @@
     </extensions>
     <pluginManagement>
       <plugins>
-
-        <plugin>
-          <groupId>org.sonarsource.scanner.maven</groupId>
-          <artifactId>sonar-maven-plugin</artifactId>
-          <version>3.9.1.2184</version>
-        </plugin>
-        <plugin>
-          <groupId>org.jacoco</groupId>
-          <artifactId>jacoco-maven-plugin</artifactId>
-          <version>0.8.6</version>
-        </plugin>
-
-
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
@@ -884,8 +875,21 @@
             </execution>
           </executions>
         </plugin>
+
+        <!--Added by Ella-->
+        <plugin>
+          <groupId>org.sonarsource.scanner.maven</groupId>
+          <artifactId>sonar-maven-plugin</artifactId>
+          <version>3.9.1.2184</version>
+        </plugin>
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>0.8.6</version>
+        </plugin>
       </plugins>
     </pluginManagement>
+
     <plugins>
       <plugin>
         <groupId>com.github.spotbugs</groupId>
@@ -1072,7 +1076,7 @@
     </plugins>
   </build>
   <profiles>
-
+    <!--Added by Ella-->
     <profile>
       <id>coverage</id>
       <activation>
