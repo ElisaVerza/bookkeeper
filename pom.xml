@@ -210,7 +210,7 @@
 
     <!--Added by Ella-->
     <!--<sonar.host.url>https://sonarcloud.io</sonar.host.url>-->
-    <sonar.coverage.jacoco.xmlReportPaths>$/home/ella/Documenti/ISW2/bookkeeper/tests/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+    <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/tests/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 
   </properties>
 
@@ -845,6 +845,23 @@
     </extensions>
     <pluginManagement>
       <plugins>
+        <plugin>
+            <groupId>com.github.ekryd.echo-maven-plugin</groupId>
+            <artifactId>echo-maven-plugin</artifactId>
+            <version>1.2.0</version>
+            <executions>
+                <execution>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>echo</goal>
+                    </goals>
+                    <configuration>
+                        <message>war has changed: ${project.basedir}</message>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
