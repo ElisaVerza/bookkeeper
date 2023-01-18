@@ -5,6 +5,7 @@ on:
     branches:
       - master
 
+
 jobs:
   build:
     name: Build
@@ -34,4 +35,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: mvn clean verify sonar:sonar -Dsonar.projectKey=bookkeeper -Dsonar.host.url=http://localhost:9000 -Dsonar.login=sqp_6953e35b87916e780a97312faef7836bbd3633e1
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=bookkeeper
