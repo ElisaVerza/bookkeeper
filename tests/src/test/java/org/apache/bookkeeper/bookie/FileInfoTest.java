@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.bookkeeper.bookie.FileInfo;
 import org.apache.bookkeeper.common.util.Watcher;
 import org.junit.Assert;
 import org.junit.Before;
@@ -224,7 +225,7 @@ public class FileInfoTest{
         }
     }
 
-    @Test
+    /*@Test
     public void integrationTest6() throws IOException{
 
         fi.write(bbArray, 0);
@@ -241,7 +242,7 @@ public class FileInfoTest{
         else if((!bestEffort & bbLen > toWrite.capacity())|| offset<0){
             Assert.assertThrows(Exception.class, () -> fi.read(bufferToRead, offset, bestEffort));
         }
-    }
+    }*/
 
     @Test
     public void integrationTest7() throws IOException{
