@@ -204,13 +204,14 @@
     <nar-maven-plugin.version>3.5.2</nar-maven-plugin.version>
     <os-maven-plugin.version>1.4.1.Final</os-maven-plugin.version>
     <protobuf-maven-plugin.version>0.6.1</protobuf-maven-plugin.version>
-    <puppycrawl.checkstyle.version>10.5.0</puppycrawl.checkstyle.version>
+    <puppycrawl.checkstyle.version>6.19</puppycrawl.checkstyle.version>
     <spotbugs-maven-plugin.version>3.1.8</spotbugs-maven-plugin.version>
     <forkCount.variable>1</forkCount.variable>
     <servlet-api.version>4.0.0</servlet-api.version>
     <rxjava.version>3.0.1</rxjava.version>
 
     <!--Added by Ella-->
+    <!--<sonar.host.url>https://sonarcloud.io</sonar.host.url>-->
     <sonar.coverage.jacoco.xmlReportPaths>${ellapath}/tests/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 
   </properties>
