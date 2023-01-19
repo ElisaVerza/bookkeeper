@@ -232,33 +232,6 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <version>3.0.0-M7</version> 
         </plugin>
-          <!--Added by Ella-->
-          <plugin>
-              <groupId>org.eclipse.m2e</groupId>
-              <artifactId>lifecycle-mapping</artifactId>
-              <version>1.0.0</version>
-              <configuration>
-                  <lifecycleMappingMetadata>
-                      <pluginExecutions>
-                          <pluginExecution>
-                              <pluginExecutionFilter>
-                                  <groupId>org.apache.maven.plugins</groupId>
-                                  <artifactId>maven-remote-resources-plugin</artifactId>
-                                  <versionRange>[1.0,)</versionRange>
-                                  <goals>
-                                      <goal>process</goal>
-                                  </goals>
-                              </pluginExecutionFilter>
-                              <action>
-                                  <ignore>
-                                  </ignore>
-                              </action>
-                          </pluginExecution>
-                      </pluginExecutions>
-                  </lifecycleMappingMetadata>
-              </configuration>
-          </plugin>
-
       </plugins>
     </pluginManagement>
 
@@ -357,62 +330,27 @@
           </execution>
         </executions>
       </plugin>
+
+      <!--Added by Ella-->
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.5</version>
+        <executions>
+          <execution>
+            <id>prepare-agent</id>
+            <goals>
+             <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>report</id>
+            <goals>
+             <goal>report</goal>
+            </goals>
+          </execution>
+        </executions>
+        </plugin>
     </plugins>
   </build>
-  <profiles>
-    <profile>
-      <id>vertx-http-server</id>
-      <dependencies>
-        <dependency>
-          <groupId>org.apache.bookkeeper.http</groupId>
-          <artifactId>vertx-http-server</artifactId>
-          <version>${project.parent.version}</version>
-        </dependency>
-      </dependencies>
-    </profile>
-    <profile>
-      <id>tls-certs</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>Generate Self-Signed Certificates</id>
-                <phase>generate-test-resources</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <workingDirectory>${basedir}/src/test/resources</workingDirectory>
-                  <executable>${basedir}/src/test/resources/generateKeysAndCerts.sh</executable>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <!-- test profiles -->
-    <profile>
-      <id>skipBookKeeperServerTests</id>
-      <activation>
-        <property>
-          <name>skipBookKeeperServerTests</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-              <skipTests>true</skipTests>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 </project>
