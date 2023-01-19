@@ -113,6 +113,8 @@
     <!--Added by Ella-->
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
+    <sonar.organization>elisaverza</sonar.organization>
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
 
     <javac.target>1.8</javac.target>
