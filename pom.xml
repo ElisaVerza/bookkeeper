@@ -108,9 +108,14 @@
   </developers>
   <properties>
 
-    <ellapath>/home/ella/Documenti/ISW2/bookkeeper</ellapath>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <!--Added by Ella-->
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <ellapath>/home/ella/Documenti/ISW2/bookkeeper</ellapath>
+
+
     <javac.target>1.8</javac.target>
     <redirectTestOutputToFile>true</redirectTestOutputToFile>
     <testRetryCount>2</testRetryCount>
@@ -835,6 +840,8 @@
       <artifactId>powermock-module-junit4</artifactId>
       <scope>test</scope>
     </dependency>
+
+    
   </dependencies>
 
   <build>
@@ -896,6 +903,11 @@
         </plugin>
 
         <!--Added by Ella-->
+         <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.8.1</version>
+        </plugin>
         <plugin>
           <groupId>org.sonarsource.scanner.maven</groupId>
           <artifactId>sonar-maven-plugin</artifactId>
