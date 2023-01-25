@@ -251,13 +251,14 @@
         <configuration>
             <targetClasses>
                 <param>org.apache.bookkeeper.bookie.FileInfo*</param>
+                <param>org.apache.bookkeeper.client.DefaultEnsemblePlacementPolicy*</param>
             </targetClasses>
             <targetTests>
                 <param>org.apache.bookkeeper.bookie.FileInfoUtilityTest</param>
+                <param>org.apache.bookkeeper.client.DefaultEnsemblePlacementPolicyTest</param>
             </targetTests>
         </configuration>
       </plugin>
-
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
