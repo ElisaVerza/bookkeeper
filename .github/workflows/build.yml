@@ -6,7 +6,7 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
- ba-dua:
+  ba-dua:
     name: ba-dua coverage
     runs-on: ubuntu-latest
     steps:
